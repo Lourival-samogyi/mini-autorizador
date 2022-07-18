@@ -2,12 +2,14 @@ package br.com.vr.miniautorizador.core.application.services;
 
 import br.com.vr.miniautorizador.core.commons.dto.CartaoDto;
 import br.com.vr.miniautorizador.core.commons.exception.CartaoJaExistenteException;
+import br.com.vr.miniautorizador.core.commons.exception.CartaoNaoEncontratoException;
 import br.com.vr.miniautorizador.core.commons.model.Cartao;
 import br.com.vr.miniautorizador.outbound.mysql.CartaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class CartaoService {
@@ -23,5 +25,17 @@ public class CartaoService {
         Cartao novoCartao = new Cartao(cartaoDto.getNumeroCartao(), cartaoDto.getSenha(), BigDecimal.valueOf(500L));
         cartaoRepository.save(novoCartao);
         return  cartaoDto;
+    }
+
+    public BigDecimal getSaldo(String numeroCartao){
+        AtomicReference<BigDecimal> retorno = new AtomicReference<>(BigDecimal.ZERO);
+
+        cartaoRepository.findByNumeroCartao(numeroCartao).ifPresentOrElse(cartao -> {
+            retorno.set(cartao.getSaldo());
+        }, () -> {
+            throw new CartaoNaoEncontratoException("Cartao nao encontrado na base dados");
+        });
+
+        return retorno.get();
     }
 }

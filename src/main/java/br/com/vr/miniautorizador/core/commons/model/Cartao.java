@@ -29,4 +29,8 @@ public class Cartao {
         this.senha = senha;
         this.saldo = saldo;
     }
+
+    public BigDecimal getSaldo() {
+        return saldo;
+    }
 }
