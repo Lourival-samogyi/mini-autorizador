@@ -21,6 +21,10 @@ public class Cartao {
     @Column
     private BigDecimal saldo;
 
+    @Column
+    @Version
+    private int controle;
+
     public Cartao() {
     }
 

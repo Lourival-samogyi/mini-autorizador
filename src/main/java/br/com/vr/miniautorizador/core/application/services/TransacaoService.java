@@ -6,6 +6,7 @@ import br.com.vr.miniautorizador.core.commons.model.Cartao;
 import br.com.vr.miniautorizador.outbound.mysql.CartaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -15,6 +16,7 @@ public class TransacaoService {
     @Autowired
     CartaoRepository cartaoRepository;
 
+    @Transactional
     public TransacaoDto realizarTransacao(TransacaoDto transacaoDto){
         Optional<Cartao> cartaoOptional = cartaoRepository.findByNumeroCartao(transacaoDto.getNumeroCartao());
         Cartao cartao = this.isTransacaoValida(transacaoDto, cartaoOptional);
